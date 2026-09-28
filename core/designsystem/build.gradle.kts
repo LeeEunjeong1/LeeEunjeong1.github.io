@@ -19,7 +19,12 @@ kotlin {
         implementation(compose.foundation)
         implementation(compose.material3)
         implementation(compose.ui)
+        implementation(compose.components.resources)
     }
+}
+
+compose.resources {
+    packageOfResClass = "io.github.leeeunjeong1.portfolio.core.designsystem.resources"
 }
 
 android {
