@@ -13,6 +13,20 @@ internal fun PortfolioEntity.toModel() = Portfolio(
     about = about,
     skills = skills,
     experiences = experiences.map { Experience(it.company, it.role, it.period, it.description) },
-    projects = projects.map { Project(it.name, it.description, it.tags, it.url) },
+    projects = projects.map {
+        Project(
+            id = it.id,
+            name = it.name,
+            description = it.description,
+            tags = it.tags,
+            period = it.period,
+            role = it.role,
+            overview = it.overview,
+            highlights = it.highlights,
+            imageUrls = it.imageUrls,
+            githubUrl = it.githubUrl,
+            serviceUrl = it.serviceUrl,
+        )
+    },
     links = PortfolioLinks(githubUrl, blogUrl, emailUrl),
 )

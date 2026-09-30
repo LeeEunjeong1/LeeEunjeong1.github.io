@@ -19,6 +19,7 @@ import io.github.leeeunjeong1.portfolio.feature.portfolio.component.*
 fun PortfolioScreen(
     state: PortfolioUiState,
     onToggleTheme: () -> Unit,
+    onProjectClick: (String) -> Unit,
 ) {
     BoxWithConstraints(Modifier.fillMaxSize()) {
         val compact = maxWidth < 720.dp
@@ -38,7 +39,11 @@ fun PortfolioScreen(
                 AboutSection(state.portfolio.about)
                 SkillsSection(state.portfolio.skills)
                 ExperienceSection(state.portfolio.experiences)
-                ProjectsSection(projects = state.portfolio.projects, compact = compact)
+                ProjectsSection(
+                    projects = state.portfolio.projects,
+                    compact = compact,
+                    onProjectClick = onProjectClick,
+                )
                 ContactSection(state.portfolio.links.email)
                 PortfolioFooter()
             }

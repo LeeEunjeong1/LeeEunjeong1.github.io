@@ -21,8 +21,15 @@ internal data class ExperienceEntity(
 )
 
 internal data class ProjectEntity(
+    val id: String,
     val name: String,
     val description: String,
     val tags: List<String>,
-    val url: String?,
+    val period: String,
+    val role: String,
+    val overview: String,
+    val highlights: List<String>,
+    val imageUrls: List<String> = emptyList(),
+    val githubUrl: String? = null,
+    val serviceUrl: String? = null,
 )
