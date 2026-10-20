@@ -48,7 +48,12 @@ fun App() {
                     if (project == null) {
                         navigate(AppRoute.Home)
                     } else {
-                        ProjectDetailScreen(project = project, onBack = { navigate(AppRoute.Home) })
+                        ProjectDetailScreen(
+                            project = project,
+                            projects = state.portfolio.projects,
+                            onProjectClick = { projectId -> navigate(AppRoute.ProjectDetail(projectId)) },
+                            onBack = { navigate(AppRoute.Home) },
+                        )
                     }
                 }
             }
