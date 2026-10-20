@@ -4,6 +4,7 @@ import io.github.leeeunjeong1.portfolio.core.model.Experience
 import io.github.leeeunjeong1.portfolio.core.model.Portfolio
 import io.github.leeeunjeong1.portfolio.core.model.PortfolioLinks
 import io.github.leeeunjeong1.portfolio.core.model.Project
+import io.github.leeeunjeong1.portfolio.core.model.ProjectArea
 import io.github.leeeunjeong1.portfolio.core.model.ProjectChallenge
 import io.github.leeeunjeong1.portfolio.data.local.PortfolioEntity
 
@@ -17,6 +18,8 @@ internal fun PortfolioEntity.toModel() = Portfolio(
     projects = projects.map {
         Project(
             id = it.id,
+            isCompanyProject = it.isCompanyProject,
+            featured = it.featured,
             name = it.name,
             description = it.description,
             tags = it.tags,
@@ -25,6 +28,9 @@ internal fun PortfolioEntity.toModel() = Portfolio(
             team = it.team,
             overview = it.overview,
             highlights = it.highlights,
+            areas = it.areas.map { area ->
+                ProjectArea(area.title, area.period, area.description, area.highlights, area.achievements)
+            },
             screenTitles = it.screenTitles,
             challenges = it.challenges.map { challenge ->
                 ProjectChallenge(challenge.title, challenge.problem, challenge.solution, challenge.result)

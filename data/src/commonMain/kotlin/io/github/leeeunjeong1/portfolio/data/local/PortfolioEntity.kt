@@ -22,6 +22,8 @@ internal data class ExperienceEntity(
 
 internal data class ProjectEntity(
     val id: String,
+    val isCompanyProject: Boolean = false,
+    val featured: Boolean = true,
     val name: String,
     val description: String,
     val tags: List<String>,
@@ -30,11 +32,20 @@ internal data class ProjectEntity(
     val team: String,
     val overview: String,
     val highlights: List<String>,
+    val areas: List<ProjectAreaEntity> = emptyList(),
     val screenTitles: List<String>,
     val challenges: List<ProjectChallengeEntity>,
     val imageUrls: List<String> = emptyList(),
     val githubUrl: String? = null,
     val serviceUrl: String? = null,
+)
+
+internal data class ProjectAreaEntity(
+    val title: String,
+    val period: String,
+    val description: String,
+    val highlights: List<String>,
+    val achievements: List<String>,
 )
 
 internal data class ProjectChallengeEntity(

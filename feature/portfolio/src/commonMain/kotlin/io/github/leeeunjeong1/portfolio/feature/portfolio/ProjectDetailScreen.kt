@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.sp
 import io.github.leeeunjeong1.portfolio.core.designsystem.component.PortfolioCard
 import io.github.leeeunjeong1.portfolio.core.designsystem.component.PortfolioSection
 import io.github.leeeunjeong1.portfolio.core.model.Project
+import io.github.leeeunjeong1.portfolio.core.model.ProjectArea
 import io.github.leeeunjeong1.portfolio.core.model.ProjectChallenge
 
 @Composable
@@ -48,6 +49,7 @@ private fun ProjectNavigation(
             .width(260.dp)
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
+            .verticalScroll(rememberScrollState())
             .padding(horizontal = 24.dp, vertical = 36.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -56,21 +58,49 @@ private fun ProjectNavigation(
         }
         Text("Projects", fontSize = 25.sp, fontWeight = FontWeight.Bold)
         HorizontalDivider(Modifier.padding(vertical = 8.dp))
-        projects.forEach { item ->
-            val selected = item.id == selectedProjectId
-            Surface(
-                color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp),
+        ProjectNavigationGroup(
+            title = "회사 프로젝트",
+            projects = projects.filter(Project::isCompanyProject),
+            selectedProjectId = selectedProjectId,
+            onProjectClick = onProjectClick,
+        )
+        HorizontalDivider(Modifier.padding(vertical = 8.dp), color = MaterialTheme.colorScheme.outlineVariant)
+        ProjectNavigationGroup(
+            title = "사이드 프로젝트",
+            projects = projects.filterNot(Project::isCompanyProject),
+            selectedProjectId = selectedProjectId,
+            onProjectClick = onProjectClick,
+        )
+    }
+}
+
+@Composable
+private fun ProjectNavigationGroup(
+    title: String,
+    projects: List<Project>,
+    selectedProjectId: String,
+    onProjectClick: (String) -> Unit,
+) {
+    Text(
+        text = title,
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Bold,
+    )
+    projects.forEach { item ->
+        val selected = item.id == selectedProjectId
+        Surface(
+            color = if (selected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+            shape = RoundedCornerShape(12.dp),
+        ) {
+            TextButton(
+                onClick = { onProjectClick(item.id) },
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(14.dp),
             ) {
-                TextButton(
-                    onClick = { onProjectClick(item.id) },
-                    modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(14.dp),
-                ) {
-                    Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text(item.name, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
-                        Text(item.period, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
+                Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(item.name, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+                    Text(item.period, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
         }
@@ -124,35 +154,55 @@ private fun ProjectContent(
                 Text("구성  ${project.team}")
             }
 
-            PortfolioSection("Screens") {
-                if (compact) {
+            if (project.areas.isNotEmpty()) {
+                PortfolioSection("프로젝트 맥락") {
+                    Text(project.overview, fontSize = 18.sp, lineHeight = 30.sp)
+                }
+            }
+
+            if (project.areas.isNotEmpty()) {
+                PortfolioSection("문제 해결 사례") {
                     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                        project.screenTitles.forEachIndexed { index, title -> ProjectScreenSlot(index, title) }
+                        project.areas.forEach { area -> ProjectAreaCard(area, compact) }
                     }
-                } else {
-                    Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        project.screenTitles.forEachIndexed { index, title ->
-                            Box(Modifier.weight(1f)) { ProjectScreenSlot(index, title) }
+                }
+            }
+
+            if (project.screenTitles.isNotEmpty()) {
+                PortfolioSection("Screens") {
+                    if (compact) {
+                        Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            project.screenTitles.forEachIndexed { index, title -> ProjectScreenSlot(index, title) }
+                        }
+                    } else {
+                        Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                            project.screenTitles.forEachIndexed { index, title ->
+                                Box(Modifier.weight(1f)) { ProjectScreenSlot(index, title) }
+                            }
                         }
                     }
-                }
-                Text(
-                    "실제 앱 스크린샷을 준비하면 각 슬롯의 이미지 리소스만 교체할 수 있습니다.",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 14.sp,
-                )
-            }
-
-            PortfolioSection("요약") {
-                Text(project.overview, fontSize = 18.sp, lineHeight = 30.sp)
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    project.highlights.forEach { highlight -> Text("•  $highlight", lineHeight = 26.sp) }
+                    Text(
+                        "실제 앱 스크린샷을 준비하면 각 슬롯의 이미지 리소스만 교체할 수 있습니다.",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 14.sp,
+                    )
                 }
             }
 
-            PortfolioSection("기술적 고민과 개선") {
-                Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-                    project.challenges.forEach { challenge -> ChallengeCard(challenge) }
+            if (project.areas.isEmpty()) {
+                PortfolioSection("요약") {
+                    Text(project.overview, fontSize = 18.sp, lineHeight = 30.sp)
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        project.highlights.forEach { highlight -> Text("•  $highlight", lineHeight = 26.sp) }
+                    }
+                }
+            }
+
+            if (project.challenges.isNotEmpty() && project.areas.isEmpty()) {
+                PortfolioSection("기술적 고민과 개선") {
+                    Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                        project.challenges.forEach { challenge -> ChallengeCard(challenge) }
+                    }
                 }
             }
 
@@ -164,6 +214,34 @@ private fun ProjectContent(
                     Button(onClick = { uriHandler.openUri(url) }) { Text("서비스 보기") }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun ProjectAreaCard(area: ProjectArea, compact: Boolean) = PortfolioCard {
+    Text(area.title, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+    Text(area.period, fontSize = 13.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    Text("마주한 문제", fontWeight = FontWeight.Bold)
+    Text(area.description, lineHeight = 25.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+    if (compact) {
+        ProjectAreaList("접근과 해결", area.highlights)
+        ProjectAreaList("개선 결과", area.achievements)
+    } else {
+        Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            Box(Modifier.weight(1f)) { ProjectAreaList("접근과 해결", area.highlights) }
+            Box(Modifier.weight(1f)) { ProjectAreaList("개선 결과", area.achievements) }
+        }
+    }
+}
+
+@Composable
+private fun ProjectAreaList(title: String, items: List<String>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(title, fontWeight = FontWeight.Bold)
+        items.forEach { item ->
+            Text("•  $item", color = MaterialTheme.colorScheme.onSurfaceVariant, lineHeight = 23.sp)
         }
     }
 }
