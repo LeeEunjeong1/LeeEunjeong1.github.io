@@ -3,13 +3,11 @@ package io.github.leeeunjeong1.portfolio.feature.portfolio.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -36,7 +34,6 @@ fun HeroSection(portfolio: Portfolio, compact: Boolean) {
             fontSize = 18.sp,
             lineHeight = 29.sp,
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = .72f),
-            modifier = Modifier.widthIn(max = 700.dp),
         )
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(onClick = { uriHandler.openUri(portfolio.links.github) }) { Text("GitHub") }
