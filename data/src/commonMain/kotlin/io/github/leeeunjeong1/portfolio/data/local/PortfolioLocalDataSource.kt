@@ -5,7 +5,8 @@ class PortfolioLocalDataSource {
         name = "이은정",
         headline = "서비스는 멈추지 않게,\n레거시는 머무르지 않게.",
         introduction = "안녕하세요, 사용자 경험과 오래 유지되는 구조를 함께 고민하는 Android 개발자 이은정입니다.",
-        about = "약 5년간 Android Native 앱을 개발하며 서비스 출시·운영, 성능 최적화, 아키텍처 개선을 경험했습니다. Kotlin과 Jetpack Compose를 중심으로 안정적이고 확장 가능한 제품을 만듭니다.",
+        about = "약 5년간 Android Native 앱을 개발하며 서비스 출시·운영, 성능 최적화, 아키텍처 개선을 경험했습니다.\n" +
+            "Kotlin과 Jetpack Compose를 중심으로 안정적이고 확장 가능한 제품을 만듭니다.",
         skills = listOf(
             "Kotlin", "Jetpack Compose", "Compose Multiplatform", "Android",
             "MVI", "Multi-module", "Coroutines", "Flow", "Hilt", "ExoPlayer",
